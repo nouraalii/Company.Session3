@@ -52,6 +52,11 @@ namespace Company.Session3.PL.Controllers
             return View();
         }
 
-
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var departmentId = _departmentrepository.Get(id);
+            return View(departmentId);
+        }
     }
 }
