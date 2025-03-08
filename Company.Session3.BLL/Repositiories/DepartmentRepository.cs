@@ -13,9 +13,10 @@ namespace Company.Session3.BLL.Repositiories
     {
         private readonly CompanyDbContext _context; //Null  
 
-        public DepartmentRepository()
+        //ASK CLR To create object from 
+        public DepartmentRepository(CompanyDbContext context)
         {
-            _context = new CompanyDbContext();
+            _context = context;
         }
 
         public IEnumerable<Department> GetAll()
