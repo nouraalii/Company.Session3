@@ -15,6 +15,7 @@ namespace Company.Session3.PL.Controllers
             _departmentrepository = departmentRepository;
         }
 
+        [HttpGet] 
         public IActionResult Index()
         {
             var departments= _departmentrepository.GetAll();
