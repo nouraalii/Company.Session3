@@ -29,5 +29,6 @@ namespace Company.Session3.DAL.Data.Contexts
         //}
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }
