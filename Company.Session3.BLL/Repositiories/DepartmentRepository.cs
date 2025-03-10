@@ -9,42 +9,47 @@ using Company.Session3.DAL.Models;
 
 namespace Company.Session3.BLL.Repositiories
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : GenericRepository<Department>,IDepartmentRepository
     {
-        private readonly CompanyDbContext _context; //Null  
-
-        //ASK CLR To create object from 
-        public DepartmentRepository(CompanyDbContext context)
+        public DepartmentRepository(CompanyDbContext context) : base(context) //ASK CLR to create object from CompanyDbContext
         {
-            _context = context;
+            
         }
 
-        public IEnumerable<Department> GetAll()
-        {
-            return _context.Departments.ToList();
-        }
+        //private readonly CompanyDbContext _context; //Null  
 
-        public Department? Get(int id)
-        {
-            return _context.Departments.Find(id);
-        }
+        ////ASK CLR To create object from 
+        //public DepartmentRepository(CompanyDbContext context)
+        //{
+        //    _context = context;
+        //}
 
-        public int Add(Department model)
-        {
-            _context.Departments.Add(model);
-            return _context.SaveChanges();
-        }
+        //public IEnumerable<Department> GetAll()
+        //{
+        //    return _context.Departments.ToList();
+        //}
 
-        public int Update(Department model)
-        {
-            _context.Departments.Update(model);
-            return _context.SaveChanges();
-        }
+        //public Department? Get(int id)
+        //{
+        //    return _context.Departments.Find(id);
+        //}
 
-        public int Delete(Department model)
-        {
-            _context.Departments.Remove(model);
-            return _context.SaveChanges();
-        }
+        //public int Add(Department model)
+        //{
+        //    _context.Departments.Add(model);
+        //    return _context.SaveChanges();
+        //}
+
+        //public int Update(Department model)
+        //{
+        //    _context.Departments.Update(model);
+        //    return _context.SaveChanges();
+        //}
+
+        //public int Delete(Department model)
+        //{
+        //    _context.Departments.Remove(model);
+        //    return _context.SaveChanges();
+        //}
     }
 }
