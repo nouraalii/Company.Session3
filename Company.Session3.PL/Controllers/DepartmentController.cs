@@ -66,28 +66,41 @@ namespace Company.Session3.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            //if (id is null) return BadRequest("Invalid Id"); //400
+            if (id is null) return BadRequest("Invalid Id"); //400
 
-            //var department = _departmentrepository.Get(id.Value);
-            //if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
-           
-            return Details(id,"Edit");
+            var department = _departmentrepository.Get(id.Value);
+            if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
+            var departmentDto = new CreateDepartmentDto()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                CreateAt = department.CreateAt
+            };
+
+            return View(departmentDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != department.Id) return BadRequest(); //400
+                //if (id != department.Id) return BadRequest(); //400
+                var department = new Department()
+                {
+                    Id = id,
+                    Code = model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt
+                };
                 var count = _departmentrepository.Update(department);
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
                 }
             }
-            return View(department);
+            return View();
         }
 
         //[HttpPost]
