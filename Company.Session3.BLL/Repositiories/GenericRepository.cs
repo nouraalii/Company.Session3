@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Company.Session3.BLL.Interfaces;
 using Company.Session3.DAL.Data.Contexts;
 using Company.Session3.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company.Session3.BLL.Repositiories
 {
@@ -20,10 +21,20 @@ namespace Company.Session3.BLL.Repositiories
 
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>) _context.Employees.Include(E=>E.Department).ToList();
+            }
+
             return _context.Set<T>().ToList();
         }
         public T? Get(int id)
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return _context.Employees.Include(E => E.Department).FirstOrDefault(E=>E.Id == id) as T;
+            }
+
             return _context.Set<T>().Find(id);
         }
 
