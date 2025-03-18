@@ -141,16 +141,24 @@ namespace Company.Session3.PL.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete([FromRoute] int id, Department department)
         {
-            if (ModelState.IsValid)
+            if (id != department.Id) return BadRequest(); // 400
+
+            var existingDepartment = _departmentrepository.Get(id);
+
+            if (existingDepartment == null)
             {
-                if (id != department.Id) return BadRequest(); //400
-                var count = _departmentrepository.Delete(department);
-                if (count > 0)
-                {
-                    return RedirectToAction("Index");
-                }
+                return NotFound(); 
             }
-            return View(department);
+
+            var count = _departmentrepository.Delete(existingDepartment); 
+
+            if (count > 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(existingDepartment); 
         }
+
     }
 }
