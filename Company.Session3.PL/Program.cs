@@ -1,6 +1,8 @@
 using Company.Session3.BLL.Interfaces;
 using Company.Session3.BLL.Repositiories;
 using Company.Session3.DAL.Data.Contexts;
+using Company.Session3.PL.Mapping;
+using Company.Session3.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Session3.PL
@@ -19,6 +21,18 @@ namespace Company.Session3.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });  //Allow DI for CompanyDbContext
+
+            //Life Time
+            //builder.Services.AddScoped();     //Create object life time per Request -UnReachable Object
+            //builder.Services.AddTransient();  //Create object life time per Operation 
+            //builder.Services.AddSingleton();  //Create object life time per Application
+
+            builder.Services.AddScoped<IScopedService , ScopedService>(); //Per Request
+            builder.Services.AddTransient<ITransientService , TransientService>(); //Per Operation
+            builder.Services.AddSingleton<ISingletonService, SingletonService>(); //Per App
+
+            //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
             var app = builder.Build();
 

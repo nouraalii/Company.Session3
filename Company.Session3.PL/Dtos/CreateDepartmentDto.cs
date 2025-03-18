@@ -12,5 +12,7 @@ namespace Company.Session3.PL.Dtos
 
         [Required(ErrorMessage = "CreateAt is Required!")]
         public DateTime CreateAt { get; set; }
+
+        public int? DepartmentId { get; set; }
     }
 }

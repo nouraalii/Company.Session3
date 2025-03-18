@@ -6,14 +6,22 @@ using System.Threading.Tasks;
 using Company.Session3.BLL.Interfaces;
 using Company.Session3.DAL.Data.Contexts;
 using Company.Session3.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company.Session3.BLL.Repositiories
 {
     public class EmployeeRepository : GenericRepository<Employee>,IEmployeeRepository
     {
+        private readonly CompanyDbContext _context;
+
         public EmployeeRepository(CompanyDbContext context) : base(context) //ASK CLR to create object from CompanyDbContext
         {
-            
+            _context = context;
+        }
+
+        public List<Employee> GetName(string name)
+        {
+            return _context.Employees.Include(E=>E.Department).Where(E=>E.Name.ToLower().Contains(name.ToLower())).ToList();
         }
 
         //private readonly CompanyDbContext _context; 
