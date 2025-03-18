@@ -16,5 +16,7 @@ namespace Company.Session3.BLL.Interfaces
         //int Add(Employee model);
         //int Update(Employee model);
         //int Delete(Employee model);
+
+        List<Employee> GetName (string name);
     }
 }
