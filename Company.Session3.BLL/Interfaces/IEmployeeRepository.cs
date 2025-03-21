@@ -17,6 +17,6 @@ namespace Company.Session3.BLL.Interfaces
         //int Update(Employee model);
         //int Delete(Employee model);
 
-        List<Employee> GetName (string name);
+        Task<List<Employee>> GetNameAsync(string name);
     }
 }

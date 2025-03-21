@@ -9,18 +9,21 @@ namespace Company.Session3.PL.Controllers
     //MVC Controller
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentrepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        //private readonly IDepartmentRepository _departmentrepository;
 
         //ASK CLR To create object from DepartmentRepository
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(/*IDepartmentRepository departmentRepository*/ IUnitOfWork unitOfWork)
         {
-            _departmentrepository = departmentRepository;
+            _unitOfWork = unitOfWork;
+            //_departmentrepository = departmentRepository;
         }
 
         [HttpGet] 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments= _departmentrepository.GetAll();
+            var departments=await _unitOfWork.DepartmentRepository.GetAllAsync();
 
             return View(departments);
         }
@@ -32,7 +35,7 @@ namespace Company.Session3.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateDepartmentDto model)
+        public async Task<IActionResult> Create(CreateDepartmentDto model)
         {
             if (ModelState.IsValid) //Server Side Validation 
             {
@@ -42,7 +45,8 @@ namespace Company.Session3.PL.Controllers
                     Name = model.Name,
                     CreateAt=model.CreateAt
                 };
-               var count = _departmentrepository.Add(department);
+                await _unitOfWork.DepartmentRepository.AddAsync(department);
+                var count =await _unitOfWork.CompleteAsync();
                 if (count > 0) 
                 {
                     return RedirectToAction("Index");
@@ -53,22 +57,22 @@ namespace Company.Session3.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int? id , string ViewName = "Details")
+        public async Task<IActionResult> Details(int? id , string ViewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department = _departmentrepository.Get(id.Value);
+            var department =await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
             if (department is null) return NotFound(new {StatusCode=404,message=$"Department With Id  : {id} is not found"});
             return View(ViewName , department);
         }
 
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department = _departmentrepository.Get(id.Value);
+            var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
             if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
             var departmentDto = new CreateDepartmentDto()
             {
@@ -82,7 +86,7 @@ namespace Company.Session3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, CreateDepartmentDto model)
+        public async Task<IActionResult> Edit([FromRoute] int id, CreateDepartmentDto model)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +98,8 @@ namespace Company.Session3.PL.Controllers
                     Name = model.Name,
                     CreateAt = model.CreateAt
                 };
-                var count = _departmentrepository.Update(department);
+                _unitOfWork.DepartmentRepository.Update(department);
+                var count =await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
@@ -127,31 +132,31 @@ namespace Company.Session3.PL.Controllers
 
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             //if (id is null) return BadRequest("Invalid Id"); //400
 
             //var department = _departmentrepository.Get(id.Value);
             //if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
             
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Department department)
+        public async Task<IActionResult> Delete([FromRoute] int id, Department department)
         {
             if (id != department.Id) return BadRequest(); // 400
 
-            var existingDepartment = _departmentrepository.Get(id);
+            var existingDepartment =await _unitOfWork.DepartmentRepository.GetAsync(id);
 
             if (existingDepartment == null)
             {
                 return NotFound(); 
             }
 
-            var count = _departmentrepository.Delete(existingDepartment); 
-
+            _unitOfWork.DepartmentRepository.Delete(existingDepartment);
+            var count =await _unitOfWork.CompleteAsync();
             if (count > 0)
             {
                 return RedirectToAction("Index");
