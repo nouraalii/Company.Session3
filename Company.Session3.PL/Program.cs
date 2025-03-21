@@ -1,3 +1,4 @@
+using Company.Session3.BLL;
 using Company.Session3.BLL.Interfaces;
 using Company.Session3.BLL.Repositiories;
 using Company.Session3.DAL.Data.Contexts;
@@ -15,8 +16,11 @@ namespace Company.Session3.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews(); //Register Built-in MVC Services
-            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); //Allow DI for DepartmentRepository
-            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>(); //Allow DI for EmployeeRepository
+            //builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); //Allow DI for DepartmentRepository
+            //builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>(); //Allow DI for EmployeeRepository
+
+            builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
+
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -59,3 +63,24 @@ namespace Company.Session3.PL
         }
     }
 }
+
+//class Test()
+//{
+//    public void Fun01()
+//    {
+//        //Statment01
+//        //Statment02
+//        //await  //Statment03 --> Take Time
+//        //Statment04
+//        //Statment05
+//    }
+
+//    public void Fun02()
+//    {
+//        //Statment01
+//        //Statment02
+//        //Statment03
+//        //Statment04
+//        //Statment05
+//    }
+//}
