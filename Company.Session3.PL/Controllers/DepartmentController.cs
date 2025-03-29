@@ -2,11 +2,13 @@
 using Company.Session3.BLL.Repositiories;
 using Company.Session3.DAL.Models;
 using Company.Session3.PL.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Session3.PL.Controllers
 {
     //MVC Controller
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
