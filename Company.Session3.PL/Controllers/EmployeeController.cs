@@ -4,10 +4,12 @@ using Company.Session3.DAL.Data.Contexts;
 using Company.Session3.DAL.Models;
 using Company.Session3.PL.Dtos;
 using Company.Session3.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.Session3.PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
