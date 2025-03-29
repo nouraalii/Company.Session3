@@ -2,8 +2,10 @@ using Company.Session3.BLL;
 using Company.Session3.BLL.Interfaces;
 using Company.Session3.BLL.Repositiories;
 using Company.Session3.DAL.Data.Contexts;
+using Company.Session3.DAL.Models;
 using Company.Session3.PL.Mapping;
 using Company.Session3.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.Session3.PL
@@ -38,6 +40,14 @@ namespace Company.Session3.PL
             //builder.Services.AddAutoMapper(typeof(EmployeeProfile));
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                            .AddEntityFrameworkStores<CompanyDbContext>();
+
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SignIn";
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -53,6 +63,7 @@ namespace Company.Session3.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
