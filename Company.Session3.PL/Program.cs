@@ -3,8 +3,12 @@ using Company.Session3.BLL.Interfaces;
 using Company.Session3.BLL.Repositiories;
 using Company.Session3.DAL.Data.Contexts;
 using Company.Session3.DAL.Models;
+using Company.Session3.PL.Helpers;
 using Company.Session3.PL.Mapping;
 using Company.Session3.PL.Services;
+using Company.Session3.PL.WorkshopSettings;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,7 +51,37 @@ namespace Company.Session3.PL
             builder.Services.ConfigureApplicationCookie(config =>
             {
                 config.LoginPath = "/Account/SignIn";
+                //config.AccessDeniedPath = "/Account/AccessDenied";
             });
+
+            builder.Services.AddAuthentication(O =>
+            {
+                O.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme ;
+
+                O.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
+            /////////////////////////
+            builder.Services.AddAuthentication(O =>
+            {
+                O.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+
+                O.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            }).AddFacebook(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
+                o.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
+            });
+
+
+
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+            builder.Services.AddScoped<IMailService , MailService>();
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
+            builder.Services.AddScoped<ITwilioService , TwilioService>();
 
             var app = builder.Build();
 
