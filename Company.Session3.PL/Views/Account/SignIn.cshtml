@@ -19,6 +19,13 @@
 			</div>
 			<input type="submit" value="SIGNIN">
 		</form>
+
+		@* sign in with google *@
+		<br />
+		<a asp-action="GoogleLogin" style="display:block ; margin : 0 auto ; text-align : center ; color : white ; width : 50%">SignIn with Google</a>
+		<br />
+		<a asp-action="FacebookLogin" style="display:block ; margin : 0 auto ; text-align : center ; color : white ; width : 50%">SignIn with Facebook</a>
+		<br />
 		<p>Don't have an Account? <a asp-action="SignUp">Create New Account?</a></p>
 		<p><a asp-action="ForgetPassword">Forget Password</a></p>
 	</div>
