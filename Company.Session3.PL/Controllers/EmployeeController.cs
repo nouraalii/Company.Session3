@@ -37,11 +37,11 @@ namespace Company.Session3.PL.Controllers
             IEnumerable<Employee> employees;
             if (string.IsNullOrEmpty(SearchInput))
             {
-                 employees =await _unitOfWork.EmployeeRepository.GetAllAsync();
+                employees = await _unitOfWork.EmployeeRepository.GetAllAsync();
             }
             else
             {
-                 employees =await _unitOfWork.EmployeeRepository.GetNameAsync(SearchInput);
+                employees = await _unitOfWork.EmployeeRepository.GetNameAsync(SearchInput);
             }
 
             ////View's Dictionary : there are 3 properties  that can  use to access the dictionary
@@ -61,24 +61,30 @@ namespace Company.Session3.PL.Controllers
             return View(employees);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Create() 
+
+        public async Task<IActionResult> Search(string SearchInput)
         {
-            var departments =await _unitOfWork.DepartmentRepository.GetAllAsync();
+            var employees = await _unitOfWork.EmployeeRepository.GetNameAsync(SearchInput);
+            return PartialView("EmployeePartialView/EmployeesTablePartialView", employees);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
 
             return View();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Create(CreateEmployeeDto model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 if (model.Image is not null)
                 {
-                   model.ImageName =  DocumentSettings.UplodeFile(model.Image, "images");
+                    model.ImageName = DocumentSettings.UplodeFile(model.Image, "images");
                 }
 
                 var employee = _mapper.Map<Employee>(model);
@@ -90,23 +96,23 @@ namespace Company.Session3.PL.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            
+
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int? id , string ViewName = "Details") 
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details")
         {
             if (id is null) return BadRequest();
-            var employees =await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
-            if(employees is null) return NotFound(new { StatusCode = 404, message = $"Employee With Id  : {id} is not found" });
-            return View(ViewName,employees);
+            var employees = await _unitOfWork.EmployeeRepository.GetAsync(id.Value);
+            if (employees is null) return NotFound(new { StatusCode = 404, message = $"Employee With Id  : {id} is not found" });
+            return View(ViewName, employees);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id) 
+        public async Task<IActionResult> Edit(int? id)
         {
-            var departments =await _unitOfWork.DepartmentRepository.GetAllAsync();
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
             if (id is null) return BadRequest("Invalid Id"); //400
 
@@ -124,7 +130,7 @@ namespace Company.Session3.PL.Controllers
                 IsDeleted = employee.IsDeleted,
                 Phone = employee.Phone,
                 Salary = employee.Salary,
-                DepartmentId = employee.DepartmentId, 
+                DepartmentId = employee.DepartmentId,
                 ImageName = employee.ImageName
             };
             return View(employeeDto);
@@ -134,7 +140,7 @@ namespace Company.Session3.PL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int id, CreateEmployeeDto model)
         {
-       
+
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
             ViewData["departments"] = departments;
 
@@ -161,7 +167,7 @@ namespace Company.Session3.PL.Controllers
                 }
             }
 
-            return View(model); 
+            return View(model);
         }
 
 
@@ -177,7 +183,7 @@ namespace Company.Session3.PL.Controllers
         {
             if (id != employee.Id) return BadRequest();
 
-            var existingEmployee =await _unitOfWork.EmployeeRepository.GetAsync(id);
+            var existingEmployee = await _unitOfWork.EmployeeRepository.GetAsync(id);
 
             if (existingEmployee == null)
             {
@@ -190,7 +196,7 @@ namespace Company.Session3.PL.Controllers
             }
 
             _unitOfWork.EmployeeRepository.Delete(existingEmployee);
-            var count =await _unitOfWork.CompleteAsync();
+            var count = await _unitOfWork.CompleteAsync();
 
             if (count > 0)
             {

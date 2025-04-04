@@ -22,10 +22,10 @@ namespace Company.Session3.PL.Controllers
             //_departmentrepository = departmentRepository;
         }
 
-        [HttpGet] 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var departments=await _unitOfWork.DepartmentRepository.GetAllAsync();
+            var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
 
             return View(departments);
         }
@@ -45,11 +45,11 @@ namespace Company.Session3.PL.Controllers
                 {
                     Code = model.Code,
                     Name = model.Name,
-                    CreateAt=model.CreateAt
+                    CreateAt = model.CreateAt
                 };
                 await _unitOfWork.DepartmentRepository.AddAsync(department);
-                var count =await _unitOfWork.CompleteAsync();
-                if (count > 0) 
+                var count = await _unitOfWork.CompleteAsync();
+                if (count > 0)
                 {
                     return RedirectToAction("Index");
                 }
@@ -59,13 +59,13 @@ namespace Company.Session3.PL.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int? id , string ViewName = "Details")
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details")
         {
             if (id is null) return BadRequest("Invalid Id"); //400
 
-            var department =await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
-            if (department is null) return NotFound(new {StatusCode=404,message=$"Department With Id  : {id} is not found"});
-            return View(ViewName , department);
+            var department = await _unitOfWork.DepartmentRepository.GetAsync(id.Value);
+            if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
+            return View(ViewName, department);
         }
 
 
@@ -101,7 +101,7 @@ namespace Company.Session3.PL.Controllers
                     CreateAt = model.CreateAt
                 };
                 _unitOfWork.DepartmentRepository.Update(department);
-                var count =await _unitOfWork.CompleteAsync();
+                var count = await _unitOfWork.CompleteAsync();
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
@@ -140,31 +140,32 @@ namespace Company.Session3.PL.Controllers
 
             //var department = _departmentrepository.Get(id.Value);
             //if (department is null) return NotFound(new { StatusCode = 404, message = $"Department With Id  : {id} is not found" });
-            
+
             return await Details(id, "Delete");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id, Department department)
         {
             if (id != department.Id) return BadRequest(); // 400
 
-            var existingDepartment =await _unitOfWork.DepartmentRepository.GetAsync(id);
+            var existingDepartment = await _unitOfWork.DepartmentRepository.GetAsync(id);
 
             if (existingDepartment == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             _unitOfWork.DepartmentRepository.Delete(existingDepartment);
-            var count =await _unitOfWork.CompleteAsync();
+            var count = await _unitOfWork.CompleteAsync();
             if (count > 0)
             {
                 return RedirectToAction("Index");
             }
 
-            return View(existingDepartment); 
+            return View(existingDepartment);
         }
 
     }

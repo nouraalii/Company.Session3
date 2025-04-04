@@ -29,6 +29,7 @@ namespace Company.Session3.PL.Controllers
                     Email = U.Email,
                     FirstName = U.FirstName,
                     LastName = U.LastName,
+                    PhoneNumber = U.PhoneNumber,
                     Roles = _userManager.GetRolesAsync(U).Result
                 });
             }
@@ -41,6 +42,7 @@ namespace Company.Session3.PL.Controllers
                     Email = U.Email,
                     FirstName = U.FirstName,
                     LastName = U.LastName,
+                    PhoneNumber = U.PhoneNumber,
                     Roles = _userManager.GetRolesAsync(U).Result
                 }).Where(U => U.FirstName.ToLower().Contains(SearchInput.ToLower()));
             }
@@ -58,21 +60,22 @@ namespace Company.Session3.PL.Controllers
 
             var Dto = new UserToReturnDto()
             {
-                Id=user.Id,
-                UserName=user.UserName,
-                FirstName=user.FirstName,
-                LastName=user.LastName,
-                Email=user.Email,
-                Roles=_userManager.GetRolesAsync(user).Result
+                Id = user.Id,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = _userManager.GetRolesAsync(user).Result
             };
-            
+
             return View(ViewName, Dto);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string? id)
-        { 
-            return await Details(id , "Edit");
+        {
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
@@ -83,7 +86,7 @@ namespace Company.Session3.PL.Controllers
             {
                 if (id != model.Id) return BadRequest("Invalid Operation!!");
 
-                var user =await _userManager.FindByIdAsync(id);
+                var user = await _userManager.FindByIdAsync(id);
                 if (user is null)
                 {
                     return BadRequest("Invalid Operation!!");
@@ -92,6 +95,7 @@ namespace Company.Session3.PL.Controllers
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
