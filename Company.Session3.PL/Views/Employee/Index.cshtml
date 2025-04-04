@@ -101,26 +101,3 @@
         </h4>
     </div>
 }
-
-<script>
-    $(document).ready(function () {
-        const searchBar = $('#SearchInput');
-        const tbody = $('table');  // Only update the tbody part
-
-        searchBar.on('keyup', function (event) {
-            var searchValue = searchBar.val();
-
-            $.ajax({
-                url: '/Employee/Search',
-                type: 'Get',
-                data: { SearchInput: searchValue },
-                success: function (result) {
-                    tbody.html(result);  // Update only the table body with the result
-                },
-                error: function (xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>

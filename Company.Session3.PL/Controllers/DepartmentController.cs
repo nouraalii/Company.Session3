@@ -146,7 +146,6 @@ namespace Company.Session3.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id, Department department)
         {
             if (id != department.Id) return BadRequest(); // 400

@@ -17,10 +17,6 @@ namespace Company.Session3.PL.Dtos
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Email is Required!!")]
-        public string PhoneNumber { get; set; }
-
-
         [Required(ErrorMessage = "Password is Required!!")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

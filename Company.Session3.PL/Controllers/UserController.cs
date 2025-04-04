@@ -29,7 +29,6 @@ namespace Company.Session3.PL.Controllers
                     Email = U.Email,
                     FirstName = U.FirstName,
                     LastName = U.LastName,
-                    PhoneNumber = U.PhoneNumber,
                     Roles = _userManager.GetRolesAsync(U).Result
                 });
             }
@@ -42,7 +41,6 @@ namespace Company.Session3.PL.Controllers
                     Email = U.Email,
                     FirstName = U.FirstName,
                     LastName = U.LastName,
-                    PhoneNumber = U.PhoneNumber,
                     Roles = _userManager.GetRolesAsync(U).Result
                 }).Where(U => U.FirstName.ToLower().Contains(SearchInput.ToLower()));
             }
@@ -65,7 +63,6 @@ namespace Company.Session3.PL.Controllers
                 FirstName=user.FirstName,
                 LastName=user.LastName,
                 Email=user.Email,
-                PhoneNumber = user.PhoneNumber,
                 Roles=_userManager.GetRolesAsync(user).Result
             };
             
@@ -95,7 +92,6 @@ namespace Company.Session3.PL.Controllers
                 user.FirstName = model.FirstName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
-                user.PhoneNumber = model.PhoneNumber;
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
