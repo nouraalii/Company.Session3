@@ -9,7 +9,6 @@ namespace Company.Session3.PL.Dtos
         public string Name { get; set; }
 
         [Range (22,60 , ErrorMessage ="Age must be between 22 and 60")]
-
         public int? Age { get; set; }
 
         [DataType(DataType.EmailAddress , ErrorMessage ="Email is not vaild!!")]
