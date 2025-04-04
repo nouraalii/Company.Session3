@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Company.Session3.DAL.Models;
+﻿using Company.Session3.DAL.Models;
 using Company.Session3.DAL.SMS;
 using Company.Session3.PL.Dtos;
 using Company.Session3.PL.Helpers;
@@ -243,65 +242,27 @@ namespace Company.Session3.PL.Controllers
 
         public IActionResult GoogleLogin()
         {
-            var redirectUrl = Url.Action("GoogleResponse", "Account", null, Request.Scheme);
-
-            var properties = new AuthenticationProperties
+            var prop = new AuthenticationProperties() 
             {
-                RedirectUri = redirectUrl
+                RedirectUri = Url.Action("GoogleResponse")
             };
-
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
         }
-
 
         public async Task<IActionResult> GoogleResponse()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-
-            if (!result.Succeeded || result.Principal == null)
-            {
-                return RedirectToAction("SignIn");
-            }
-
-            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-            var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName);
-            var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
-
-            if (string.IsNullOrEmpty(email))
-            {
-                return RedirectToAction("SignIn");
-            }
-
-            // Check if user exists
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                // Create new user
-                user = new AppUser
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                cliams => new
                 {
-                    UserName = email,
-                    Email = email,
-                    FirstName = firstName ?? "",
-                    LastName = lastName ?? "",
-                };
-
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded)
-                {
-                    return RedirectToAction("SignIn");
+                    cliams.Type,
+                    cliams.Value,
+                    cliams.Issuer,
+                    cliams.OriginalIssuer
                 }
-
-                // Add Google login info
-                var info = new UserLoginInfo(GoogleDefaults.AuthenticationScheme, email, "Google");
-                await _userManager.AddLoginAsync(user, info);
-            }
-
-            // Sign in user
-            await _signInManager.SignInAsync(user, isPersistent: false);
+                );
             return RedirectToAction("Index", "Home");
         }
-
-
 
 
 
@@ -318,51 +279,16 @@ namespace Company.Session3.PL.Controllers
         public async Task<IActionResult> FacebookResponse()
         {
             var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
-
-            if (!result.Succeeded || result.Principal == null)
-            {
-                return RedirectToAction("SignIn");
-            }
-
-            // Extract Facebook-specific claims (e.g., email, first name, last name)
-            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-            var firstName = result.Principal.FindFirstValue(ClaimTypes.GivenName);
-            var lastName = result.Principal.FindFirstValue(ClaimTypes.Surname);
-
-            if (string.IsNullOrEmpty(email))
-            {
-                return RedirectToAction("SignIn");
-            }
-
-            // Check if user exists
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                // Create new user
-                user = new AppUser
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                cliams => new
                 {
-                    UserName = email,
-                    Email = email,
-                    FirstName = firstName ?? "",
-                    LastName = lastName ?? "",
-                };
-
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded)
-                {
-                    return RedirectToAction("SignIn");
+                    cliams.Type,
+                    cliams.Value,
+                    cliams.Issuer,
+                    cliams.OriginalIssuer
                 }
-
-                // Link Facebook Login
-                await _userManager.AddLoginAsync(user, new UserLoginInfo(FacebookDefaults.AuthenticationScheme, email, "Facebook"));
-            }
-
-            // Sign in the user
-            await _signInManager.SignInAsync(user, isPersistent: false);
+                );
             return RedirectToAction("Index", "Home");
         }
-
-
-
     }
 }

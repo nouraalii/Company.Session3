@@ -54,21 +54,27 @@ namespace Company.Session3.PL
                 //config.AccessDeniedPath = "/Account/AccessDenied";
             });
 
-            builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(O =>
             {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            })
-.AddGoogle(o =>
-{
-    o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-})
-.AddFacebook(o =>
-{
-    o.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
-    o.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
-});
+                O.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme ;
 
+                O.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
+            /////////////////////////
+            builder.Services.AddAuthentication(O =>
+            {
+                O.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+
+                O.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            }).AddFacebook(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
+                o.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
+            });
 
 
 
